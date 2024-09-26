@@ -356,4 +356,4 @@ print(f"Variance expliquée par les {n_components} composantes : {np.sum(pca.exp
 # Appliquer run_svm_cv sur les données après réduction de dimension
 run_svm_cv(X_reduced, y)
 
-# %%
+#%%

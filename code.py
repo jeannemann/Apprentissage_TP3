@@ -47,13 +47,13 @@ y_test = y1[1::2].astype(int)
 
 # fit the model with linear kernel
 clf = SVC(kernel='linear')
-clf.fit(X_train, Y_train)
+clf.fit(X_train, y_train)
 
 # predict labels for the test data base
 y_pred = clf.predict(X_test)
 
 # check your score
-score = clf.score(X_test, Y_test)
+score = clf.score(X_test, y_test)
 print('Score : %s' % score)
 
 # display the frontiere
@@ -62,17 +62,17 @@ def f(xx):
     return clf.predict(xx.reshape(1, -1))
 
 plt.figure()
-frontiere(f, X_train, Y_train, w=None, step=50, alpha_choice=1)
+frontiere(f, X_train, y_train, w=None, step=50, alpha_choice=1)
 
 # Same procedure but with a grid search
 parameters = {'kernel': ['linear'], 'C': list(np.linspace(0.001, 3, 21))}
 clf2 = SVC()
 clf_grid = GridSearchCV(clf2, parameters, n_jobs=-1)
-clf_grid.fit(X_train, Y_train)
+clf_grid.fit(X_train, y_train)
 
 # check your score
 print(clf_grid.best_params_)
-print('Score : %s' % clf_grid.score(X_test, Y_test))
+print('Score : %s' % clf_grid.score(X_test, y_test))
 
 def f_grid(xx):
     """Classifier: needed to avoid warning due to shape issues"""
@@ -80,7 +80,7 @@ def f_grid(xx):
 
 # display the frontiere
 plt.figure()
-frontiere(f_grid, X_train, Y_train, w=None, step=50, alpha_choice=1)
+frontiere(f_grid, X_train, y_train, w=None, step=50, alpha_choice=1)
 
 #%%
 ###############################################################################
@@ -165,6 +165,7 @@ plt.tight_layout()
 plt.draw()
 
 #%%
+# Q3
 ###############################################################################
 #               SVM GUI
 ###############################################################################
@@ -210,7 +211,7 @@ idx0 = (lfw_people.target == target_names.index(names[0]))
 idx1 = (lfw_people.target == target_names.index(names[1]))
 images = np.r_[images[idx0], images[idx1]]
 n_samples = images.shape[0]
-y = np.r_[np.zeros(np.sum(idx0)), np.ones(np.sum(idx1))].astype(np.int)
+y = np.r_[np.zeros(np.sum(idx0)), np.ones(np.sum(idx1))].astype(int)
 
 # plot a sample set of the data
 plot_gallery(images, np.arange(12))
@@ -233,10 +234,10 @@ X /= np.std(X, axis=0)
 #%%
 ####################################################################
 # Split data into a half training and half test set
-# X_train, X_test, y_train, y_test, images_train, images_test = \
-#    train_test_split(X, y, images, test_size=0.5, random_state=0)
-# X_train, X_test, y_train, y_test = \
-#    train_test_split(X, y, test_size=0.5, random_state=0)
+#X_train, X_test, y_train, y_test, images_train, images_test = \
+    #train_test_split(X, y, images, test_size=0.5, random_state=0)
+#X_train, X_test, y_train, y_test = \
+    #train_test_split(X, y, test_size=0.5, random_state=0)
 
 indices = np.random.permutation(X.shape[0])
 train_idx, test_idx = indices[:X.shape[0] // 2], indices[X.shape[0] // 2:]
@@ -249,7 +250,7 @@ images_train, images_test = images[
 # Quantitative evaluation of the model quality on the test set
 
 #%%
-# Q3
+# Q4
 print("--- Linear kernel ---")
 print("Fitting the classifier to the training set")
 t0 = time()
@@ -257,8 +258,15 @@ t0 = time()
 # fit a classifier (linear) and test all the Cs
 Cs = 10. ** np.arange(-5, 6)
 scores = []
+
+# Parcourir les différentes valeurs de C
 for C in Cs:
-    # TODO ...
+    # Créer et ajuster un classifieur SVM avec un noyau linéaire
+    clf = SVC(kernel='linear', C=C)
+    clf.fit(X_train, y_train)
+
+    # Calculer et enregistrer les scores pour chaque C
+    scores.append(clf.score(X_test, y_test))
 
 ind = np.argmax(scores)
 print("Best C: {}".format(Cs[ind]))
@@ -277,7 +285,9 @@ t0 = time()
 
 #%%
 # predict labels for the X_test images with the best classifier
-# clf =  ... TODO
+t0=time()
+clf=SVC(kernel='linear', C=Cs[ind])
+clf.fit(X_train, y_train)
 
 print("done in %0.3fs" % (time() - t0))
 # The chance level is the accuracy that will be reached when constantly predicting the majority class.
@@ -287,7 +297,7 @@ print("Accuracy : %s" % clf.score(X_test, y_test))
 #%%
 ####################################################################
 # Qualitative evaluation of the predictions using matplotlib
-
+y_pred = clf.predict(X_test)
 prediction_titles = [title(y_pred[i], y_test[i], names)
                      for i in range(y_pred.shape[0])]
 
@@ -302,7 +312,7 @@ plt.show()
 
 
 #%%
-# Q4
+# Q5
 
 def run_svm_cv(_X, _y):
     _indices = np.random.permutation(_X.shape[0])
@@ -319,7 +329,7 @@ def run_svm_cv(_X, _y):
           (_clf_linear.score(_X_train, _y_train), _clf_linear.score(_X_test, _y_test)))
 
 print("Score sans variable de nuisance")
-# TODO ... use run_svm_cv on data
+run_svm_cv(X, y)  # Appliquer le modèle SVM sur les données sans nuisance
 
 print("Score avec variable de nuisance")
 n_features = X.shape[1]
@@ -328,12 +338,22 @@ sigma = 1
 noise = sigma * np.random.randn(n_samples, 300, )
 X_noisy = np.concatenate((X, noise), axis=1)
 X_noisy = X_noisy[np.random.permutation(X.shape[0])]
-# TODO ... use run_svm_cv on noisy data
+
+# Appliquer le modèle SVM sur les données avec nuisance
+run_svm_cv(X_noisy, y)
 
 #%%
-# Q5
+# Q6
 print("Score apres reduction de dimension")
 
-n_components = 20  # jouer avec ce parametre
+n_components = 100  # jouer avec ce parametre
 pca = PCA(n_components=n_components).fit(X_noisy)
-# ... TODO
+X_reduced = pca.fit_transform(X_noisy)
+
+# Vérifier la variance expliquée par les composantes principales
+print(f"Variance expliquée par les {n_components} composantes : {np.sum(pca.explained_variance_ratio_)}")
+
+# Appliquer run_svm_cv sur les données après réduction de dimension
+run_svm_cv(X_reduced, y)
+
+# %%

@@ -1,0 +1,19 @@
+# Ignorer les fichiers LaTeX temporaires
+*.aux
+*.log
+*.toc
+*.out
+*.synctex.gz
+
+# Ignorer les fichiers Python temporaires
+*.pyc
+__pycache__/
+
+# Ignorer les fichiers de configuration de l'IDE
+.vscode/
+.idea/
+
+# Ignorer les fichiers de sauvegarde
+*~
+*.bak
+*.tmp

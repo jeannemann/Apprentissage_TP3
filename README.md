@@ -11,7 +11,7 @@ Ce dépôt contient plusieurs fichiers, tous utiles à la compréhension du proj
 - **`code.py`** : (en anglais) est la version complétée (par mes soins) du fichier svm_script.py . Il contient les codes complets exécutés pour chaque question.
 - **`Apprentissage_TP3.pdf`** : est le rendu pdf du TP (avec les réponses aux questions).
 - **`main.tex`** : est le code LaTeX du rendu du TP.
-- **`Des fichiers.png`** : images présentes dans le main.tex .
+- **`Des fichiers .png et .jpg`** : images présentes dans le main.tex .
 - **`.gitignore`** : pour la propreté du dépôt.
 
 

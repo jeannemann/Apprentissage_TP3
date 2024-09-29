@@ -86,7 +86,7 @@ frontiere(f_grid, X_train, y_train, w=None, step=50, alpha_choice=1)
 ###############################################################################
 #               Iris Dataset
 ###############################################################################
-
+# load the iris dataset
 iris = datasets.load_iris()
 X = iris.data
 X = scaler.fit_transform(X)
@@ -119,14 +119,14 @@ print('Generalization score for linear kernel: %s, %s' % (train_score, test_scor
 
 #%%
 # Q2 polynomial kernel
-# Définir les paramètres pour la recherche sur grille avec le noyau polynomial
+# Define parameters for grid search with polynomial kernel
 Cs = list(np.logspace(-3, 3, 5))
 gammas = 10. ** np.arange(1, 2)
 degrees = np.r_[1, 2, 3]
 
 parameters = {'kernel': ['poly'], 'C': Cs, 'gamma': gammas, 'degree': degrees}
 
-# GridSearch pour le modèle avec noyau polynomial
+# GridSearch for the model with polynomial kernel
 clf_poly = GridSearchCV(SVC(), parameters, n_jobs=-1)
 clf_poly.fit(X_train, y_train)
 
@@ -259,13 +259,13 @@ t0 = time()
 Cs = 10. ** np.arange(-5, 6)
 scores = []
 
-# Parcourir les différentes valeurs de C
+# Iterate through the different values of C
 for C in Cs:
-    # Créer et ajuster un classifieur SVM avec un noyau linéaire
+    # Create and fit an SVM classifier with a linear kernel
     clf = SVC(kernel='linear', C=C)
     clf.fit(X_train, y_train)
 
-    # Calculer et enregistrer les scores pour chaque C
+    # Calculate and record the scores for each C
     scores.append(clf.score(X_test, y_test))
 
 ind = np.argmax(scores)
@@ -313,7 +313,6 @@ plt.show()
 
 #%%
 # Q5
-
 def run_svm_cv(_X, _y):
     _indices = np.random.permutation(_X.shape[0])
     _train_idx, _test_idx = _indices[:_X.shape[0] // 2], _indices[_X.shape[0] // 2:]
@@ -329,31 +328,32 @@ def run_svm_cv(_X, _y):
           (_clf_linear.score(_X_train, _y_train), _clf_linear.score(_X_test, _y_test)))
 
 print("Score sans variable de nuisance")
-run_svm_cv(X, y)  # Appliquer le modèle SVM sur les données sans nuisance
+run_svm_cv(X, y)  # Apply the SVM model on the data without nuisance
 
 print("Score avec variable de nuisance")
 n_features = X.shape[1]
-# On rajoute des variables de nuisances
+# Adding nuisance variables
 sigma = 1
 noise = sigma * np.random.randn(n_samples, 300, )
 X_noisy = np.concatenate((X, noise), axis=1)
 X_noisy = X_noisy[np.random.permutation(X.shape[0])]
+run_svm_cv(X_noisy, y) # Apply the SVM model on the data with nuisance
 
-# Appliquer le modèle SVM sur les données avec nuisance
-run_svm_cv(X_noisy, y)
 
 #%%
 # Q6
+# Run the following code for the values 5, 10, 15, 20, 25, 80, 120, and 200 and compare the results.
 print("Score apres reduction de dimension")
 
-n_components = 100  # jouer avec ce parametre
+n_components = 25  # We play with this parameter
 pca = PCA(n_components=n_components).fit(X_noisy)
 X_reduced = pca.fit_transform(X_noisy)
 
-# Vérifier la variance expliquée par les composantes principales
+# Check the variance explained by the principal components
 print(f"Variance expliquée par les {n_components} composantes : {np.sum(pca.explained_variance_ratio_)}")
 
-# Appliquer run_svm_cv sur les données après réduction de dimension
-run_svm_cv(X_reduced, y)
+# Apply run_svm_cv on the data after dimensionality reduction
+#run_svm_cv(X_reduced, y)
+# The line above takes too long to run, so we leave it as a comment for now, but I encourage any patient person to try running it and see the results for the values given above.
 
 #%%

@@ -16,10 +16,14 @@ Ce dépôt contient plusieurs fichiers, tous utiles à la compréhension du proj
 
 
 ## Installation
+Pour installer ce dépît sur otre ordinateur, copier le code suivant dans votre terminal :
 ```bash
 git clone https://github.com/jeannemann/Apprentissage_TP3.git
 cd Apprentissage_TP3
 ```
 
+## Autrice
+MANNEQUIN Jeanne
+
 ## Note obtenue
-Cette partie sera complétée quand les notes seront tombées.
+Cette partie sera complétée quand les notes seront sorties.

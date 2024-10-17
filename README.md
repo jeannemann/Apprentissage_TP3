@@ -26,4 +26,4 @@ cd Apprentissage_TP3
 MANNEQUIN Jeanne
 
 ## Note obtenue
-17,5/20
+17/20
